@@ -119,7 +119,7 @@ const withNetworkConnectivity = ({
       );
     };
 
-    handleConnectivityChange = (isConnected: boolean) => {
+    handleConnectivityChange = (isConnected: *) => {
       const { store } = this.context;
       reactConnectionStore.setConnection(isConnected);
 
@@ -131,11 +131,14 @@ const withNetworkConnectivity = ({
       ) {
         const actionQueue = store.getState().network.actionQueue;
 
-        if (isConnected !== store.getState().network.isConnected) {
+        if (
+          isConnected !== 'timeout' &&
+          isConnected !== store.getState().network.isConnected
+        ) {
           store.dispatch(connectionChange(isConnected));
         }
         // dispatching queued actions in order of arrival (if we have any)
-        if (isConnected && actionQueue.length > 0) {
+        if (isConnected === true && actionQueue.length > 0) {
           actionQueue.forEach((action: *) => {
             store.dispatch(action);
           });
